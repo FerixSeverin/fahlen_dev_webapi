@@ -15,5 +15,7 @@ namespace fahlen_dev_webapi.Models {
 
     [Required]
     public string Platform { get; set; }
+
+    
   }
 }
