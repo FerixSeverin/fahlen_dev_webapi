@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using fahlen_dev_webapi.Data;
@@ -9,9 +10,10 @@ using fahlen_dev_webapi.Data;
 namespace fahlen_dev_webapi.Migrations
 {
     [DbContext(typeof(FoodContext))]
-    partial class FoodContextModelSnapshot : ModelSnapshot
+    [Migration("20210703144836_TableNameChange")]
+    partial class TableNameChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,7 +74,7 @@ namespace fahlen_dev_webapi.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("MeasureId")
+                    b.Property<int?>("MeasureId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -80,7 +82,7 @@ namespace fahlen_dev_webapi.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<int>("RecipeGroupId")
+                    b.Property<int?>("RecipeGroupId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -130,7 +132,7 @@ namespace fahlen_dev_webapi.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedDate")
@@ -173,7 +175,7 @@ namespace fahlen_dev_webapi.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<int>("RecipeId")
+                    b.Property<int?>("RecipeId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -190,15 +192,11 @@ namespace fahlen_dev_webapi.Migrations
                 {
                     b.HasOne("fahlen_dev_webapi.Models.Measure", "Measure")
                         .WithMany()
-                        .HasForeignKey("MeasureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MeasureId");
 
                     b.HasOne("fahlen_dev_webapi.Models.RecipeGroup", "RecipeGroup")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("RecipeGroupId");
 
                     b.Navigation("Measure");
 
@@ -208,10 +206,8 @@ namespace fahlen_dev_webapi.Migrations
             modelBuilder.Entity("fahlen_dev_webapi.Models.Recipe", b =>
                 {
                     b.HasOne("fahlen_dev_webapi.Models.Account", "Account")
-                        .WithMany("Recipes")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("AccountId");
 
                     b.Navigation("Account");
                 });
@@ -219,27 +215,10 @@ namespace fahlen_dev_webapi.Migrations
             modelBuilder.Entity("fahlen_dev_webapi.Models.RecipeGroup", b =>
                 {
                     b.HasOne("fahlen_dev_webapi.Models.Recipe", "Recipe")
-                        .WithMany("RecipeGroups")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("RecipeId");
 
                     b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("fahlen_dev_webapi.Models.Account", b =>
-                {
-                    b.Navigation("Recipes");
-                });
-
-            modelBuilder.Entity("fahlen_dev_webapi.Models.Recipe", b =>
-                {
-                    b.Navigation("RecipeGroups");
-                });
-
-            modelBuilder.Entity("fahlen_dev_webapi.Models.RecipeGroup", b =>
-                {
-                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

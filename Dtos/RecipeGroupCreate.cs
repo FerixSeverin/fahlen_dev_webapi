@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using fahlen_dev_webapi.Models;
 
-namespace fahlen_dev_webapi.Models
+namespace fahlen_dev_webapi.Dtos
 {
-    public class RecipeGroup : BaseEntity
+    public class RecipeGroupCreate
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(250)]
         public string Name { get; set; }
@@ -15,7 +13,5 @@ namespace fahlen_dev_webapi.Models
         [Required]
         public int RecipeId { get; set; }
         public Recipe Recipe { get; set; }
-
-        public List<Ingredient> Ingredients { get; set; }
     }
 }

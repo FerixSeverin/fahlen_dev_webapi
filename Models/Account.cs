@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace fahlen_dev_webapi.Models
@@ -21,5 +22,6 @@ namespace fahlen_dev_webapi.Models
         [Required]
         [MaxLength(250)]
         public string Password { get; set; }
+        public List<Recipe> Recipes { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace fahlen_dev_webapi.Data
 {
-    public class PostgresFoodRepo : ICommanderRepo
+    public class PostgresFoodRepo : IFoodDBRepo
     {
         private readonly FoodContext _context;
 
@@ -14,6 +14,13 @@ namespace fahlen_dev_webapi.Data
         {
             _context = context;
         }
+
+        public bool SaveChanges()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
+
+        // Account Requests
 
         public void CreateAccount(Account acc)
         {
@@ -34,9 +41,114 @@ namespace fahlen_dev_webapi.Data
             return _context.Accounts.ToList();
         }
 
-        public bool SaveChanges()
+        // Recipe Requests
+
+        public IEnumerable<Recipe> GetAllRecipes()
         {
-            return (_context.SaveChanges() >= 0);
+            return _context.Recipes.ToList();
         }
-    }
+
+        public Recipe GetRecipeById(int id)
+        {
+            return _context.Recipes.FirstOrDefault(r => r.Id == id);
+        }
+
+        public void CreateRecipe(Recipe rep)
+        {
+            if (rep == null) {
+                throw new ArgumentNullException(nameof(rep));
+            }
+
+            _context.Recipes.Add(rep);
+        }
+
+        public void DeleteRecipe(Recipe rep) {
+            if(rep == null) {
+                throw new ArgumentNullException(nameof(rep));
+            }
+            _context.Recipes.Remove(rep);
+        }
+
+        // Recipe Group Requests
+
+        public IEnumerable<RecipeGroup> GetAllRecipeGroups()
+        {
+            return _context.RecipeGroups.ToList();
+        }
+
+        public RecipeGroup GetRecipeGroupById(int id)
+        {
+            return _context.RecipeGroups.FirstOrDefault(r => r.Id == id);
+        }
+
+        public void CreateRecipeGroup(RecipeGroup repGro)
+        {
+            if (repGro == null) {
+                throw new ArgumentNullException(nameof(repGro));
+            }
+
+            _context.RecipeGroups.Add(repGro);
+        }
+
+        public void DeleteRecipeGroup(RecipeGroup repGro) {
+            if(repGro == null) {
+                throw new ArgumentNullException(nameof(repGro));
+            }
+            _context.RecipeGroups.Remove(repGro);
+        }
+
+        public IEnumerable<Ingredient> GetAllIngredients()
+        {
+            return _context.Ingredients.ToList();
+        }
+
+        public Ingredient GetIngredientById(int id)
+        {
+            return _context.Ingredients.FirstOrDefault(i => i.Id == id);
+        }
+
+        public void CreateIngredient(Ingredient ing)
+        {
+            if (ing == null) {
+                throw new ArgumentNullException(nameof(ing));
+            }
+
+            _context.Ingredients.Add(ing);
+        }
+
+        public void DeleteIngredient(Ingredient ing)
+        {
+            if(ing == null) {
+                throw new ArgumentNullException(nameof(ing));
+            }
+            _context.Ingredients.Remove(ing);
+        }
+
+        public IEnumerable<Measure> GetAllMeasures()
+        {
+            return _context.Measures.ToList();
+        }
+
+        public Measure GetMeasureById(int id)
+        {
+            return _context.Measures.FirstOrDefault(m => m.Id == id);
+        }
+
+        public void CreateMeasure(Measure mea)
+        {
+            if (mea == null) {
+                throw new ArgumentNullException(nameof(mea));
+            }
+
+            _context.Measures.Add(mea);
+        }
+
+        public void DeleteMeasure(Measure mea)
+        {
+            if(mea == null) {
+                throw new ArgumentNullException(nameof(mea));
+            }
+            _context.Measures.Remove(mea);
+        }
+  }
 }
