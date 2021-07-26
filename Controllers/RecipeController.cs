@@ -35,6 +35,7 @@ namespace fahlen_dev_webapi.Controllers
             return NotFound();
         }
 
+        [HttpPost]
         public ActionResult<RecipeRead> CreateRecipe(RecipeCreate recipeCreate) {
             var recipeModel = _mapper.Map<Recipe>(recipeCreate);
             _repository.CreateRecipe(recipeModel);

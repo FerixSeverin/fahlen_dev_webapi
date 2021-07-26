@@ -34,6 +34,7 @@ namespace fahlen_dev_webapi.Controllers
             return NotFound();
         }
 
+        [HttpPost]
         public ActionResult<MeasureRead> CreateMeasure(MeasureCreate measureCreate) {
             var measureModel = _mapper.Map<Measure>(measureCreate);
             _repository.CreateMeasure(measureModel);

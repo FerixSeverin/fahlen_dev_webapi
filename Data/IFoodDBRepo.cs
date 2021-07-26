@@ -23,6 +23,7 @@ namespace fahlen_dev_webapi.Data {
       // Recipe Group Requests
       IEnumerable<RecipeGroup> GetAllRecipeGroups();
       RecipeGroup GetRecipeGroupById(int id);
+      IEnumerable<RecipeGroup> GetAllRecipeGroupsByAccountId(int id);
       void CreateRecipeGroup(RecipeGroup rep);
       void DeleteRecipeGroup(RecipeGroup rep);
 

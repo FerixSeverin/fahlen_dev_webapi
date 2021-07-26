@@ -150,5 +150,12 @@ namespace fahlen_dev_webapi.Data
             }
             _context.Measures.Remove(mea);
         }
+
+        public IEnumerable<RecipeGroup> GetAllRecipeGroupsByAccountId(int id)
+        {
+            var listOfIds = _context.RecipeGroups.Where(n=>n.RecipeId == id).Select(x=>x.Id);
+            var itemEntity = _context.RecipeGroups.Where(m=>listOfIds.Contains(m.Id));
+            return itemEntity.ToList();
+        }
   }
 }

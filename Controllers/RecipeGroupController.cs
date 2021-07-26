@@ -21,7 +21,7 @@ namespace fahlen_dev_webapi.Controllers
 
         [HttpGet]
         public ActionResult <IEnumerable<RecipeGroupRead>> GetAllRecipeGroups() {
-            var recipeGroupItems = _repository.GetAllRecipes();
+            var recipeGroupItems = _repository.GetAllRecipeGroups();
             return Ok(_mapper.Map<IEnumerable<RecipeGroupRead>>(recipeGroupItems));
         }
 
@@ -33,6 +33,7 @@ namespace fahlen_dev_webapi.Controllers
             return NotFound();
         }
 
+        [HttpPost]
         public ActionResult<RecipeGroupRead> CreateRecipeGroup(RecipeGroupCreate recipeGroupCreate) {
             var recipeGroupModel = _mapper.Map<RecipeGroup>(recipeGroupCreate);
             _repository.CreateRecipeGroup(recipeGroupModel);
@@ -52,6 +53,14 @@ namespace fahlen_dev_webapi.Controllers
             _repository.SaveChanges();
 
             return NoContent();
+        }
+
+        [HttpGet("recipe/{id}", Name = "GetRecipeGroupsByRecipeId")]
+        public ActionResult <IEnumerable<RecipeGroupRead>> GetRecipeGroupsByRecipeId(int id) {
+            var recipeGroupItems = _repository.GetAllRecipeGroupsByAccountId(id);
+            if (recipeGroupItems != null)
+                return Ok(_mapper.Map<IEnumerable<RecipeGroupRead>>(recipeGroupItems));
+            return NotFound();
         }
     }
 }
