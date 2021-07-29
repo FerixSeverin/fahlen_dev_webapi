@@ -14,10 +14,8 @@ namespace fahlen_dev_webapi.Dtos
 
         [Required]
         public int MeasureId { get; set; }
-        public Measure Measure { get; set; }
 
         [Required]
         public int RecipeGroupId { get; set; }
-        public RecipeGroup RecipeGroup { get; set; }
     }
 }

@@ -157,5 +157,17 @@ namespace fahlen_dev_webapi.Data
             var itemEntity = _context.RecipeGroups.Where(m=>listOfIds.Contains(m.Id));
             return itemEntity.ToList();
         }
-  }
+
+        public IEnumerable<Ingredient> GetAllIngredientsByRecipeGroupId(int id)
+        {
+            var listOfIds = _context.Ingredients.Where(n=>n.RecipeGroupId == id).Select(x=>x.Id);
+            var itemEntity = _context.Ingredients.Where(m=>listOfIds.Contains(m.Id));
+            return itemEntity.ToList();
+        }
+
+        // public IEnumerable<Recipe> GetAllRecipesWithRecipeGroup()
+        // {
+        //     throw new NotImplementedException();
+        // }
+    }
 }

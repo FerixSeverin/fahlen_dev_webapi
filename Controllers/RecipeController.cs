@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using fahlen_dev_webapi.Data;
 using fahlen_dev_webapi.Dtos;
@@ -55,6 +56,39 @@ namespace fahlen_dev_webapi.Controllers
             _repository.SaveChanges();
 
             return NoContent();
+        }
+
+        [HttpGet("all/{id}", Name = "GetRecipeEditById")]
+        public ActionResult <RecipeReadWithRecipeGroups> GetRecipeEditById(int id) {
+            var recipeItem = _repository.GetRecipeById(id);
+            if (recipeItem != null) {
+                var recipeGroupItems = _repository.GetAllRecipeGroupsByAccountId(id);
+                if (recipeGroupItems != null) {
+                    recipeItem.RecipeGroups = recipeGroupItems.ToList();
+                    foreach (var recipeGroup in recipeItem.RecipeGroups) {
+                        var ingredientItem = _repository.GetAllIngredientsByRecipeGroupId(recipeGroup.Id);
+                        if (ingredientItem != null) {
+                            recipeGroup.Ingredients = ingredientItem.ToList();
+                            foreach (var ingredient in recipeGroup.Ingredients) {
+                                var maesureItem = _repository.GetMeasureById(ingredient.MeasureId);
+                                if (maesureItem != null) {
+                                    ingredient.Measure = maesureItem;
+                                }
+                            }
+                        }
+                    }
+                }
+                var measureItems = _repository.GetAllMeasures();
+                var recipeReadItem = _mapper.Map<RecipeReadWithRecipeGroups>(recipeItem);
+                if (measureItems != null) {
+                    recipeReadItem.Measures = _mapper.Map<IEnumerable<MeasureRead>>(measureItems).ToList();
+                }
+                
+
+                return Ok(recipeReadItem); 
+            }
+
+            return NotFound();
         }
     }
 }

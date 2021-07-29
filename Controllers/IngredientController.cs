@@ -26,7 +26,7 @@ namespace fahlen_dev_webapi.Controllers
         }
 
         [HttpGet("{id}", Name = "GetIngredientById")]
-        public ActionResult<RecipeRead> GetIngredientById(int id) {
+        public ActionResult<IngredientRead> GetIngredientById(int id) {
             var ingredientItem = _repository.GetIngredientById(id);
             if (ingredientItem != null)
                 return Ok(_mapper.Map<IngredientRead>(ingredientItem));

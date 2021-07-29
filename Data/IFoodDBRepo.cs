@@ -20,6 +20,8 @@ namespace fahlen_dev_webapi.Data {
       void CreateRecipe(Recipe rep);
       void DeleteRecipe(Recipe rep);
 
+      // IEnumerable<RecipeReadWithRecipeGroups> GetAllRecipesWithRecipeGroup();
+
       // Recipe Group Requests
       IEnumerable<RecipeGroup> GetAllRecipeGroups();
       RecipeGroup GetRecipeGroupById(int id);
@@ -32,6 +34,8 @@ namespace fahlen_dev_webapi.Data {
       Ingredient GetIngredientById(int id);
       void CreateIngredient(Ingredient ing);
       void DeleteIngredient(Ingredient ing);
+
+      IEnumerable<Ingredient> GetAllIngredientsByRecipeGroupId(int id);
 
       // Measure Requests
       IEnumerable<Measure> GetAllMeasures();
