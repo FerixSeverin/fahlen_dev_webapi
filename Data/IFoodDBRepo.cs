@@ -43,6 +43,11 @@ namespace fahlen_dev_webapi.Data {
       void CreateMeasure(Measure mea);
       void DeleteMeasure(Measure mea);
 
+      IEnumerable<Instruction> GetAllInstructions();
+      Instruction GetInstructionById(int id);
+      void CreateInstruction(Instruction ins);
+      void DeleteInstruction(Instruction ins);
+
       // void CreateCommand(Command cmd);
       // void UpdateCommand(Command cmd);
       // void DeleteCommand(Command cmd);

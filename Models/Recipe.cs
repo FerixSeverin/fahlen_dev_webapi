@@ -21,7 +21,7 @@ namespace fahlen_dev_webapi.Models
         [Required]
         public int AccountId { get; set; }
         public Account Account { get; set; }
-
         public List<RecipeGroup> RecipeGroups { get; set; }
+        public List<Instruction> Instructions { get; set; }
     }
 }

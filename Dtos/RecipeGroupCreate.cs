@@ -12,6 +12,5 @@ namespace fahlen_dev_webapi.Dtos
 
         [Required]
         public int RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
     }
 }

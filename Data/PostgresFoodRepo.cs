@@ -165,9 +165,36 @@ namespace fahlen_dev_webapi.Data
             return itemEntity.ToList();
         }
 
-        // public IEnumerable<Recipe> GetAllRecipesWithRecipeGroup()
-        // {
-        //     throw new NotImplementedException();
-        // }
+        public IEnumerable<Instruction> GetAllInstructions()
+        {
+            return _context.Instructions.ToList();
+        }
+
+        public Instruction GetInstructionById(int id)
+        {
+            return _context.Instructions.FirstOrDefault(i => i.Id == id);
+        }
+
+        public void CreateInstruction(Instruction ins)
+        {
+            if (ins == null) {
+                throw new ArgumentNullException(nameof(ins));
+            }
+
+            _context.Instructions.Add(ins);
+        }
+
+        public void DeleteInstruction(Instruction ins)
+        {
+            if(ins == null) {
+                throw new ArgumentNullException(nameof(ins));
+            }
+            _context.Instructions.Remove(ins);
+        }
+
+    // public IEnumerable<Recipe> GetAllRecipesWithRecipeGroup()
+    // {
+    //     throw new NotImplementedException();
+    // }
     }
 }

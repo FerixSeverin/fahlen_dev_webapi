@@ -43,5 +43,6 @@ namespace fahlen_dev_webapi.Data
         public DbSet<RecipeGroup> RecipeGroups { get; set; }
         public DbSet<Measure> Measures { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Instruction> Instructions { get; set; }
     }
 }
