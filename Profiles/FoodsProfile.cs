@@ -26,6 +26,9 @@ namespace fahlen_dev_webapi.Profiles
 
             CreateMap<Measure, MeasureRead>();
             CreateMap<MeasureCreate, Measure>();
+
+            CreateMap<Instruction, InstructionRead>();
+            CreateMap<InstructionCreate, Instruction>();
         }
     }
 }
