@@ -192,6 +192,13 @@ namespace fahlen_dev_webapi.Data
             _context.Instructions.Remove(ins);
         }
 
+        public IEnumerable<Instruction> GetAllInstructionsByRecipeId(int id)
+        {
+            var listOfIds = _context.Instructions.Where(n=>n.RecipeId == id).Select(x=>x.Id);
+            var itemEntity = _context.Instructions.Where(m=>listOfIds.Contains(m.Id));
+            return itemEntity.ToList();
+        }
+
     // public IEnumerable<Recipe> GetAllRecipesWithRecipeGroup()
     // {
     //     throw new NotImplementedException();

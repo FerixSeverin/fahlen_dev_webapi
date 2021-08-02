@@ -15,5 +15,7 @@ namespace fahlen_dev_webapi.Dtos
         public List<RecipeGroupReadWithIngredientRead> RecipeGroups { get; set; }
 
         public List<MeasureRead> Measures { get; set; }
+
+        public List<InstructionRead> Instructions { get; set; }
     }
 }

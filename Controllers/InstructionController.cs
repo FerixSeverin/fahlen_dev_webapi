@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using fahlen_dev_webapi.Data;
+using fahlen_dev_webapi.Dtos;
 using fahlen_dev_webapi.Models;
 using Microsoft.AspNetCore.Mvc;
 

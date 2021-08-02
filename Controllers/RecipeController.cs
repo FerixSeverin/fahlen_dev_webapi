@@ -78,12 +78,16 @@ namespace fahlen_dev_webapi.Controllers
                         }
                     }
                 }
+                
                 var measureItems = _repository.GetAllMeasures();
                 var recipeReadItem = _mapper.Map<RecipeReadWithRecipeGroups>(recipeItem);
                 if (measureItems != null) {
                     recipeReadItem.Measures = _mapper.Map<IEnumerable<MeasureRead>>(measureItems).ToList();
                 }
-                
+                var instructionItems = _repository.GetAllInstructionsByRecipeId(id);
+                if (instructionItems != null) {
+                    recipeReadItem.Instructions = _mapper.Map<IEnumerable<InstructionRead>>(instructionItems).ToList();
+                }
 
                 return Ok(recipeReadItem); 
             }

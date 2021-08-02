@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace fahlen_dev_webapi.Models
+namespace fahlen_dev_webapi.Dtos
 {
   public class InstructionRead
   {

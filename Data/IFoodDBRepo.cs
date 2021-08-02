@@ -48,6 +48,8 @@ namespace fahlen_dev_webapi.Data {
       void CreateInstruction(Instruction ins);
       void DeleteInstruction(Instruction ins);
 
+      IEnumerable<Instruction> GetAllInstructionsByRecipeId(int id);
+
       // void CreateCommand(Command cmd);
       // void UpdateCommand(Command cmd);
       // void DeleteCommand(Command cmd);
