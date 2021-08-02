@@ -13,6 +13,8 @@ namespace fahlen_dev_webapi.Data {
       Account GetAccountById(int id);
       void CreateAccount(Account acc);
 
+      Account GetAccountByEmail(string email);
+
       // Recipe Requests
 
       IEnumerable<Recipe> GetAllRecipes();

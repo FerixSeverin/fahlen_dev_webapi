@@ -199,9 +199,16 @@ namespace fahlen_dev_webapi.Data
             return itemEntity.ToList();
         }
 
+    public Account GetAccountByEmail(string email)
+    {
+      var id = _context.Accounts.First(n=>n.Email == email).Id;
+      var itemEntity = _context.Accounts.FirstOrDefault(i => i.Id == id);
+      return itemEntity;
+    }
+
     // public IEnumerable<Recipe> GetAllRecipesWithRecipeGroup()
     // {
     //     throw new NotImplementedException();
     // }
-    }
+  }
 }

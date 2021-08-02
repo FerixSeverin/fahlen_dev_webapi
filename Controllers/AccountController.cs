@@ -45,6 +45,18 @@ namespace fahlen_dev_webapi.Controllers
                 return CreatedAtRoute(nameof(GetAccountById), new {Id = accountRead.Id}, accountRead);
             }
 
+            [HttpGet("login")]
+            public ActionResult<AccountRead> GetAccountByLogin(Login login) {
+                var accountItem = _repository.GetAccountByEmail(login.Email);
+                if (accountItem != null) {
+                    if (accountItem.Password == login.Password) {
+                        return Ok(_mapper.Map<AccountRead>(accountItem));
+                    }
+                    return Unauthorized();
+                }
+                return NotFound();
+            } 
+
             
 
             // // POST api/commands
