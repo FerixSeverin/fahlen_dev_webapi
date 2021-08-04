@@ -1,4 +1,6 @@
+using fahlen_dev_webapi.Domain;
 using fahlen_dev_webapi.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -44,5 +46,9 @@ namespace fahlen_dev_webapi.Data
         public DbSet<Measure> Measures { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Instruction> Instructions { get; set; }
+
+        public DbSet<IdentityUser> IdentityUsers { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

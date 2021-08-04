@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using fahlen_dev_webapi.Data;
@@ -9,9 +10,10 @@ using fahlen_dev_webapi.Data;
 namespace fahlen_dev_webapi.Migrations
 {
     [DbContext(typeof(FoodContext))]
-    partial class FoodContextModelSnapshot : ModelSnapshot
+    [Migration("20210804183833_Identity2")]
+    partial class Identity2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,36 +71,6 @@ namespace fahlen_dev_webapi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("IdentityUsers");
-                });
-
-            modelBuilder.Entity("fahlen_dev_webapi.Domain.RefreshToken", b =>
-                {
-                    b.Property<string>("Token")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("Invalidated")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("JwtId")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Used")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Token");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("fahlen_dev_webapi.Models.Account", b =>
@@ -296,15 +268,6 @@ namespace fahlen_dev_webapi.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeGroups");
-                });
-
-            modelBuilder.Entity("fahlen_dev_webapi.Domain.RefreshToken", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("fahlen_dev_webapi.Models.Ingredient", b =>

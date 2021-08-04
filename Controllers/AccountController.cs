@@ -3,7 +3,6 @@ using AutoMapper;
 using fahlen_dev_webapi.Data;
 using fahlen_dev_webapi.Dtos;
 using fahlen_dev_webapi.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fahlen_dev_webapi.Controllers

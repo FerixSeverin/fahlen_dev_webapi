@@ -5,12 +5,15 @@ using AutoMapper;
 using fahlen_dev_webapi.Data;
 using fahlen_dev_webapi.Dtos;
 using fahlen_dev_webapi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fahlen_dev_webapi.Controllers
 {
     [Route("api/recipe")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RecipeController : ControllerBase
     {
         private readonly IFoodDBRepo _repository;
