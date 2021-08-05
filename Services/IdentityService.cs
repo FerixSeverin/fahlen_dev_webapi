@@ -54,7 +54,7 @@ namespace fahlen_dev_webapi.Services
     {
         var validatedToken = GetPrincipalFromToken(token);
 
-        if(validatedToken is not null) {
+        if(validatedToken is null) {
             return new AuthenticationResult{
                 Errors = new[] {"Invalid Token"}
             };
@@ -62,7 +62,7 @@ namespace fahlen_dev_webapi.Services
 
         var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
 
-        var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(expiryDateUnix).Subtract(_jwtSettings.TokenLifeTime);
+        var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(expiryDateUnix);
 
         if(expiryDateTimeUtc > DateTime.UtcNow) {
             return new AuthenticationResult {Errors = new[] {"This token hasn't expired yet"}};
@@ -154,8 +154,6 @@ namespace fahlen_dev_webapi.Services
 
       return await GenerateAuthenticationResultForUserAsync(newUser);
     }
-
-
 
     private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(IdentityUser user)
     {

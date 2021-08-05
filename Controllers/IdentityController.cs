@@ -1,9 +1,11 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using fahlen_dev_webapi.Contracts;
 using fahlen_dev_webapi.Contracts.Requests;
 using fahlen_dev_webapi.Contracts.Response;
 using fahlen_dev_webapi.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fahlen_dev_webapi.Controllers
@@ -11,12 +13,16 @@ namespace fahlen_dev_webapi.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityService _identityService;
-        public IdentityController(IIdentityService identityService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public IdentityController(IIdentityService identityService, IHttpContextAccessor httpContextAccessor)
         {
             _identityService = identityService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthSuccessResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthFailResponse))]
         public async Task<IActionResult> Register([FromBody]UserRegistrationRequest request) {
             if(!ModelState.IsValid) {
                 return BadRequest(new AuthFailResponse {
@@ -32,6 +38,11 @@ namespace fahlen_dev_webapi.Controllers
                 });
             }
 
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.UtcNow.AddMonths(6);
+            option.HttpOnly = true;
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", authResponse.RefreshToken, option);
+
             return Ok(new AuthSuccessResponse {
                 Token = authResponse.Token,
                 RefreshToken = authResponse.RefreshToken
@@ -39,6 +50,8 @@ namespace fahlen_dev_webapi.Controllers
         }
 
         [HttpPost(ApiRoutes.Identity.Login)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthSuccessResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthFailResponse))]
         public async Task<IActionResult> Login([FromBody]UserLoginRequest request) {
             var authResponse = await _identityService.LoginAsync(request.Email, request.Password);
 
@@ -48,6 +61,11 @@ namespace fahlen_dev_webapi.Controllers
                 });
             }
 
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.UtcNow.AddMonths(6);
+            option.HttpOnly = true;
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", authResponse.RefreshToken, option);
+
             return Ok(new AuthSuccessResponse {
                 Token = authResponse.Token,
                 RefreshToken = authResponse.RefreshToken
@@ -55,6 +73,8 @@ namespace fahlen_dev_webapi.Controllers
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthSuccessResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthFailResponse))]
         public async Task<IActionResult> Refresh([FromBody]RefreshTokenRequest request) {
             var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken);
 
@@ -63,6 +83,11 @@ namespace fahlen_dev_webapi.Controllers
                     Errors = authResponse.Errors
                 });
             }
+
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.UtcNow.AddMonths(6);
+            option.HttpOnly = true;
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", authResponse.RefreshToken, option);
 
             return Ok(new AuthSuccessResponse {
                 Token = authResponse.Token,

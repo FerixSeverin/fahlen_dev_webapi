@@ -9,6 +9,7 @@ using fahlen_dev_webapi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,8 @@ namespace fahlen_dev_webapi
             };
 
             services.AddSingleton(tokenValidationParameters);
+            services.AddSingleton<IHttpContextAccessor,
+                HttpContextAccessor>();
 
             services.AddAuthentication(x => {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
