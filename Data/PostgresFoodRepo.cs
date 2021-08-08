@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using fahlen_dev_webapi.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace fahlen_dev_webapi.Data
@@ -204,6 +206,45 @@ namespace fahlen_dev_webapi.Data
       var id = _context.Accounts.First(n=>n.Email == email).Id;
       var itemEntity = _context.Accounts.FirstOrDefault(i => i.Id == id);
       return itemEntity;
+    }
+
+    public async void DeleteRecipeGroupAsync(int id)
+    {
+        var recipeEntity = await _context.Recipes.SingleAsync(x => x.Id == id);
+        _context.Recipes.Remove(recipeEntity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> UserOwnsRecipeAsync(int recipeId, string userId)
+    {
+      var recipeEntity = await _context.Recipes.AsNoTracking().SingleOrDefaultAsync(x => x.Id == recipeId);
+
+      if (recipeEntity is null) {
+          return false;
+      }
+
+      if (recipeEntity.UserId != userId) {
+          return false;
+      }
+
+      return true;
+    }
+
+    public async Task<IEnumerable<Recipe>> GetAllRecipesByUserIdAsync(string userId)
+    {
+        var userOwnedRecipes = _context.Recipes.Where(x => x.UserId == userId);
+        return await userOwnedRecipes.ToListAsync();
+    }
+
+    public async Task<Recipe> GetRecipeByIdAsync(int id)
+    {
+        return await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        var changes = await _context.SaveChangesAsync();
+        return (changes >= 0);
     }
 
     // public IEnumerable<Recipe> GetAllRecipesWithRecipeGroup()

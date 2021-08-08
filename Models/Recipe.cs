@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace fahlen_dev_webapi.Models
 {
@@ -18,9 +20,10 @@ namespace fahlen_dev_webapi.Models
         [MaxLength(1000)]
         public string Description { get; set; }
 
-        [Required]
-        public int AccountId { get; set; }
-        public Account Account { get; set; }
+        public string UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public IdentityUser User { get; set; }
         public List<RecipeGroup> RecipeGroups { get; set; }
         public List<Instruction> Instructions { get; set; }
     }

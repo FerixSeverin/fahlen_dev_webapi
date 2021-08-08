@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using fahlen_dev_webapi.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace fahlen_dev_webapi.Dtos
 {
@@ -14,8 +16,5 @@ namespace fahlen_dev_webapi.Dtos
 
         [MaxLength(1000)]
         public string Description { get; set; }
-
-        [Required]
-        public int AccountId { get; set; }
     }
 }

@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using fahlen_dev_webapi.Models;
 
 namespace fahlen_dev_webapi.Data {
   public interface IFoodDBRepo {
       bool SaveChanges();
+
+      Task<bool> SaveChangesAsync();
       // IEnumerable<Command> GetAllCommands();
       // Command GetCommandById(int id);
 
@@ -18,7 +21,10 @@ namespace fahlen_dev_webapi.Data {
       // Recipe Requests
 
       IEnumerable<Recipe> GetAllRecipes();
+
+      Task<IEnumerable<Recipe>> GetAllRecipesByUserIdAsync(string userId);
       Recipe GetRecipeById(int id);
+      Task<Recipe> GetRecipeByIdAsync(int id);
       void CreateRecipe(Recipe rep);
       void DeleteRecipe(Recipe rep);
 
@@ -30,6 +36,10 @@ namespace fahlen_dev_webapi.Data {
       IEnumerable<RecipeGroup> GetAllRecipeGroupsByAccountId(int id);
       void CreateRecipeGroup(RecipeGroup rep);
       void DeleteRecipeGroup(RecipeGroup rep);
+
+      Task<bool> UserOwnsRecipeAsync(int recipeId, string userId);
+
+      void DeleteRecipeGroupAsync(int id);
 
       // Ingredient Requests
       IEnumerable<Ingredient> GetAllIngredients();
@@ -51,6 +61,7 @@ namespace fahlen_dev_webapi.Data {
       void DeleteInstruction(Instruction ins);
 
       IEnumerable<Instruction> GetAllInstructionsByRecipeId(int id);
+
 
       // void CreateCommand(Command cmd);
       // void UpdateCommand(Command cmd);
