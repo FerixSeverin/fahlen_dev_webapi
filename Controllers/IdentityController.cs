@@ -38,14 +38,11 @@ namespace fahlen_dev_webapi.Controllers
                 });
             }
 
-            CookieOptions option = new CookieOptions();
-            option.Expires = DateTime.UtcNow.AddMonths(6);
-            option.HttpOnly = true;
+            CookieOptions option = CookieProvider();
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", authResponse.RefreshToken, option);
 
             return Ok(new AuthSuccessResponse {
                 Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
             });
         }
 
@@ -61,22 +58,20 @@ namespace fahlen_dev_webapi.Controllers
                 });
             }
 
-            CookieOptions option = new CookieOptions();
-            option.Expires = DateTime.UtcNow.AddMonths(6);
-            option.HttpOnly = true;
+            CookieOptions option = CookieProvider();
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", authResponse.RefreshToken, option);
 
             return Ok(new AuthSuccessResponse {
                 Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
             });
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthSuccessResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthFailResponse))]
-        public async Task<IActionResult> Refresh([FromBody]RefreshTokenRequest request) {
-            var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken);
+        public async Task<IActionResult> Refresh() {
+            string refreshToken = Request.Cookies["refreshToken"];
+            var authResponse = await _identityService.RefreshTokenAsync(refreshToken);
 
             if (!authResponse.Success) {
                 return BadRequest(new AuthFailResponse {
@@ -84,15 +79,22 @@ namespace fahlen_dev_webapi.Controllers
                 });
             }
 
-            CookieOptions option = new CookieOptions();
-            option.Expires = DateTime.UtcNow.AddMonths(6);
-            option.HttpOnly = true;
+            CookieOptions option = CookieProvider();
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", authResponse.RefreshToken, option);
+            
 
             return Ok(new AuthSuccessResponse {
                 Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
             });
+        }
+
+        private CookieOptions CookieProvider() {
+            return new CookieOptions {
+                Expires = DateTime.UtcNow.AddMonths(6),
+                HttpOnly = true,
+                IsEssential = true,
+                SameSite = SameSiteMode.Strict,
+            };
         }
     }
 }

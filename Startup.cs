@@ -112,9 +112,10 @@ namespace fahlen_dev_webapi
             services.AddCors(options => {
                 options.AddDefaultPolicy(
                     builder => {
-                        builder.AllowAnyOrigin()
+                        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                                .AllowAnyHeader()
                                 .AllowAnyMethod()
-                                .AllowAnyHeader();
+                                .AllowCredentials();
                     }
                 );
             });

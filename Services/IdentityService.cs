@@ -50,26 +50,8 @@ namespace fahlen_dev_webapi.Services
       return await GenerateAuthenticationResultForUserAsync(user);
     }
 
-    public async Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken)
+    public async Task<AuthenticationResult> RefreshTokenAsync(string refreshToken)
     {
-        var validatedToken = GetPrincipalFromToken(token);
-
-        if(validatedToken is null) {
-            return new AuthenticationResult{
-                Errors = new[] {"Invalid Token"}
-            };
-        }
-
-        var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
-
-        var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(expiryDateUnix);
-
-        if(expiryDateTimeUtc > DateTime.UtcNow) {
-            return new AuthenticationResult {Errors = new[] {"This token hasn't expired yet"}};
-        }
-
-        var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-
         var storedRefreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(x => x.Token == refreshToken);
 
         if (storedRefreshToken is null) {
@@ -88,17 +70,37 @@ namespace fahlen_dev_webapi.Services
             return new AuthenticationResult {Errors = new[] {"This refresh token has been used"}};
         }
 
-        if(storedRefreshToken.JwtId != jti) {
-            return new AuthenticationResult {Errors = new[] {"This refresh token does not match this JWT"}};
-        }
+        //var validatedToken = GetPrincipalFromToken(storedRefreshToken.JwtId);
+        //Console.WriteLine(storedRefreshToken.JwtId);
+
+        // if(validatedToken is null) {
+        //     return new AuthenticationResult{
+        //         Errors = new[] {"Invalid Token"}
+        //     };
+        // }
+
+        //var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+
+        //var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(expiryDateUnix);
+
+        // if(expiryDateTimeUtc > DateTime.UtcNow) {
+        //     return new AuthenticationResult {Errors = new[] {"This token hasn't expired yet"}};
+        // }
+
+        //var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;        
+
+        // if(storedRefreshToken.JwtId != jti) {
+        //     return new AuthenticationResult {Errors = new[] {"This refresh token does not match this JWT"}};
+        // }
 
         storedRefreshToken.Used = true;
-
         _context.RefreshTokens.Update(storedRefreshToken);
         await _context.SaveChangesAsync();
 
-        var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type == "id").Value);
+        // var user = await _userManager.FindByIdAsync(storedRefreshToken.UserId);
 
+        var user = await _userManager.FindByIdAsync(storedRefreshToken.UserId);
+        
         return await GenerateAuthenticationResultForUserAsync(user);
     }
 
