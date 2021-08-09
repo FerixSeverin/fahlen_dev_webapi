@@ -192,5 +192,31 @@ namespace fahlen_dev_webapi.Services
             RefreshToken = refreshToken.Token
         };
     }
+
+    public async Task<AuthenticationResult> LogoutAsync(string refreshToken) {
+      var storedRefreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(x => x.Token == refreshToken);
+
+      if (storedRefreshToken is null) {
+          return new AuthenticationResult {Errors = new[] {"This refresh token does not exist"}};
+      }
+
+      if(DateTime.UtcNow > storedRefreshToken.ExpiryDate) {
+          return new AuthenticationResult {Errors = new[] {"This refresh token has expired"}};
+      }
+
+      if(storedRefreshToken.Invalidated) {
+          return new AuthenticationResult {Errors = new[] {"This refresh has been invalidated"}};
+      }
+
+      if(storedRefreshToken.Used) {
+          return new AuthenticationResult {Errors = new[] {"This refresh token has been used"}};
+      }
+
+      storedRefreshToken.Used = true;
+      _context.RefreshTokens.Update(storedRefreshToken);
+      await _context.SaveChangesAsync();
+
+      return new AuthenticationResult { Success = true };
+    }
   }
 }

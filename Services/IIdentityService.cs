@@ -9,5 +9,7 @@ namespace fahlen_dev_webapi.Services
     Task<AuthenticationResult> RegisterAsync(string email, string password);
     Task<AuthenticationResult> LoginAsync(string email, string password);
     Task<AuthenticationResult> RefreshTokenAsync(string refreshToken);
+
+    Task<AuthenticationResult> LogoutAsync(string refreshToken);
   }
 }

@@ -88,6 +88,25 @@ namespace fahlen_dev_webapi.Controllers
             });
         }
 
+        [HttpPost(ApiRoutes.Identity.Logout)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthLogoutSuccessResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthFailResponse))]
+        public async Task<IActionResult> Logout() {
+            string refreshToken = Request.Cookies["refreshToken"];
+            var authResponse = await _identityService.LogoutAsync(refreshToken);
+
+            if (!authResponse.Success) {
+                return BadRequest(new AuthFailResponse {
+                    Errors = authResponse.Errors
+                });
+            }
+
+            CookieOptions option = CookieProvider();
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", "", option);
+
+            return Ok(new AuthLogoutSuccessResponse{});
+        }
+
         private CookieOptions CookieProvider() {
             return new CookieOptions {
                 Expires = DateTime.UtcNow.AddMonths(6),

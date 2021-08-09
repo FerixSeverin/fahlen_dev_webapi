@@ -13,6 +13,8 @@ namespace fahlen_dev_webapi.Contracts
             public const string Register = Base + "/identity/register";
 
             public const string Refresh = Base + "/identity/refresh";
+
+            public const string Logout = Base + "/identity/logout";
         }
     }
 }
