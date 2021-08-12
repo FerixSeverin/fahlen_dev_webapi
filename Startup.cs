@@ -36,7 +36,7 @@ namespace fahlen_dev_webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FoodContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("CommanderConnection")));
+            services.AddDbContext<FoodContext>(opt => opt.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION")));
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
@@ -45,6 +45,7 @@ namespace fahlen_dev_webapi
                 .AddEntityFrameworkStores<FoodContext>();
             
             var jwtSettings = new JwtSettings();
+            jwtSettings.Secret = Environment.GetEnvironmentVariable("JWT_SECRET");
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
