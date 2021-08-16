@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,9 @@ using fahlen_dev_webapi.Options;
 using fahlen_dev_webapi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,7 +40,19 @@ namespace fahlen_dev_webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FoodContext>(opt => opt.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION")));
+            // services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(".aspnet/https/"))
+            //     .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration() {
+            //         EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+            //         ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+            //     });
+            
+            services.AddDbContext<FoodContext>(opt => opt.UseNpgsql(""));
+            services.AddDataProtection()
+                .PersistKeysToDbContext<FoodContext>().UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration() {
+                    EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                    ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+                });;
+            
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
@@ -45,8 +61,10 @@ namespace fahlen_dev_webapi
                 .AddEntityFrameworkStores<FoodContext>();
             
             var jwtSettings = new JwtSettings();
-            jwtSettings.Secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+            //jwtSettings.Secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+            
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
+            jwtSettings.Secret = "";
             services.AddSingleton(jwtSettings);
 
             services.AddScoped<IIdentityService, IdentityService>();
@@ -111,21 +129,24 @@ namespace fahlen_dev_webapi
                 });
             });
             services.AddCors(options => {
-                options.AddDefaultPolicy(
-                    builder => {
-                        builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                options.AddPolicy("CorsPolicy",
+                builder => {
+                        builder.WithOrigins("https://*.fahlen.dev")
+                                .SetIsOriginAllowedToAllowWildcardSubdomains()
                                 .AllowAnyHeader()
                                 .AllowAnyMethod()
                                 .AllowCredentials();
+                                
                     }
                 );
             });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors();
+            app.UseCors("CorsPolicy");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -136,6 +157,8 @@ namespace fahlen_dev_webapi
             //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            
 
             app.UseAuthorization();
 

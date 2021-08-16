@@ -2,12 +2,13 @@ using fahlen_dev_webapi.Domain;
 using fahlen_dev_webapi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using System;
 using System.Linq;
 
 namespace fahlen_dev_webapi.Data
 {
-    public class FoodContext : DbContext
+    public class FoodContext : DbContext, IDataProtectionKeyContext
     {
         public FoodContext(DbContextOptions<FoodContext> opt) : base(opt) {
 
@@ -50,5 +51,7 @@ namespace fahlen_dev_webapi.Data
         public DbSet<IdentityUser> IdentityUsers { get; set; }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     }
 }
