@@ -40,13 +40,10 @@ namespace fahlen_dev_webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(".aspnet/https/"))
-            //     .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration() {
-            //         EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
-            //         ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
-            //     });
-            
+            // Database connection
             services.AddDbContext<FoodContext>(opt => opt.UseNpgsql(""));
+
+            // Cert
             services.AddDataProtection()
                 .PersistKeysToDbContext<FoodContext>().UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration() {
                     EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
@@ -57,11 +54,14 @@ namespace fahlen_dev_webapi
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
+            // Add user to database
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<FoodContext>();
             
+
+            // Load JWT settings with secret
             var jwtSettings = new JwtSettings();
-            //jwtSettings.Secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+            // jwtSettings.Secret = Environment.GetEnvironmentVariable("JWT_SECRET");
             
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             jwtSettings.Secret = "";
@@ -69,6 +69,7 @@ namespace fahlen_dev_webapi
 
             services.AddScoped<IIdentityService, IdentityService>();
 
+            // Token validation parameters
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -83,6 +84,7 @@ namespace fahlen_dev_webapi
             services.AddSingleton<IHttpContextAccessor,
                 HttpContextAccessor>();
 
+            // Bearer authentication
             services.AddAuthentication(x => {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -93,8 +95,10 @@ namespace fahlen_dev_webapi
                 x.TokenValidationParameters = tokenValidationParameters;
             });
 
+            // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IFoodDBRepo, PostgresFoodRepo>();
+            // Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "fahlen_dev_webapi", Version = "v1" });
@@ -128,6 +132,8 @@ namespace fahlen_dev_webapi
                     }
                 });
             });
+
+            // Cors policy
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
                 builder => {
@@ -146,22 +152,27 @@ namespace fahlen_dev_webapi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Activate Cors
             app.UseCors("CorsPolicy");
+
+            // Developer mode
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "fahlen_dev_webapi v1"));
             }
-
+            // HTTPS redirect
             //app.UseHttpsRedirection();
 
+            // Activate Routing
             app.UseRouting();
 
             
-
+            // Activate Authentication
             app.UseAuthorization();
 
+            //Activate Endpoints
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
